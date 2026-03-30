@@ -1,0 +1,23 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: capsule_db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"           # expõe para o DBeaver conectar localmente
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # persiste os dados
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
