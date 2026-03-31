@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
-from app.database import get_db
-from app.models.user import User
-from app.schemas.user_schema import UserCreate, UserResponse, UserWithPatientCreate, UserWithPatientResponse
-from app.models.patient import Patient
+from app.infrastructure.database.connection import get_db
+from app.domain.models.user import User
+from app.domain.schemas.user_schema import UserCreate, UserResponse
+from app.domain.schemas.user_patient_schema import UserWithPatientCreate, UserWithPatientResponse
+from app.domain.models.patient import Patient
+from app.use_cases.auth.dependencies import exigir_admin
 from typing import List
 
 router = APIRouter(prefix="/usuarios", tags=["Usuários"])
@@ -25,18 +27,18 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 @router.get("/", response_model=List[UserResponse])
-def list_users(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
+def list_users(skip: int = 0, limit: int = 20, db: Session = Depends(get_db), usuario = Depends(exigir_admin)):
     return db.query(User).offset(skip).limit(limit).all()
 
 @router.get("/{user_id}", response_model=UserResponse)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(user_id: int, db: Session = Depends(get_db), usuario = Depends(exigir_admin)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     return user
 
 @router.put("/{user_id}", response_model=UserResponse)
-def update_user(user_id: int, dados: UserCreate, db: Session = Depends(get_db)):
+def update_user(user_id: int, dados: UserCreate, db: Session = Depends(get_db), usuario = Depends(exigir_admin)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -52,7 +54,7 @@ def update_user(user_id: int, dados: UserCreate, db: Session = Depends(get_db)):
     return user
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(get_db), usuario = Depends(exigir_admin)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")

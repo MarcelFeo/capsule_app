@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pathlib import Path
 
 class Settings(BaseSettings):
     # Banco
@@ -24,7 +25,7 @@ class Settings(BaseSettings):
         )
 
     class Config:
-        env_file = ".env"
+        env_file = str(Path(__file__).parent / ".env")
 
 # instância global
 settings = Settings()

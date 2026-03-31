@@ -14,6 +14,9 @@ class PatientBase(BaseModel):
 class PatientCreate(PatientBase):
     usuario_id: int
 
+class PatientUpdate(PatientBase):
+    pass  # all fields optional
+
 class PatientResponse(PatientBase):
     id: int
     usuario_id: int

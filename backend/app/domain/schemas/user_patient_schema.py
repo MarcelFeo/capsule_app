@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date, datetime
+from .patient_schema import PatientResponse
+from .user_schema import UserResponse
 
 class UserWithPatientCreate(BaseModel):
     # Dados do usuário
