@@ -2,58 +2,97 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from app.database import get_db
-from app.models.models import Usuario
-from app.schemas.schemas import UsuarioCreate, UsuarioResponse
+from app.models.user import User
+from app.schemas.user_schema import UserCreate, UserResponse, UserWithPatientCreate, UserWithPatientResponse
+from app.models.patient import Patient
 from typing import List
 
 router = APIRouter(prefix="/usuarios", tags=["Usuários"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-@router.post("/", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
-def create_user(usuario: UsuarioCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # Verifica email duplicado
-    if db.query(Usuario).filter(Usuario.email == usuario.email).first():
+    if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="E-mail já cadastrado")
 
-    hashed = pwd_context.hash(usuario.senha)
-    db_usuario = Usuario(**usuario.model_dump(exclude={"senha"}), senha=hashed)
+    hashed = pwd_context.hash(user.senha)
+    db_user = User(**user.model_dump(exclude={"senha"}), senha=hashed)
 
-    db.add(db_usuario)
+    db.add(db_user)
     db.commit()
-    db.refresh(db_usuario)
-    return db_usuario
+    db.refresh(db_user)
+    return db_user
 
-@router.get("/", response_model=List[UsuarioResponse])
+@router.get("/", response_model=List[UserResponse])
 def list_users(skip: int = 0, limit: int = 20, db: Session = Depends(get_db)):
-    return db.query(Usuario).offset(skip).limit(limit).all()
+    return db.query(User).offset(skip).limit(limit).all()
 
-@router.get("/{usuario_id}", response_model=UsuarioResponse)
-def get_user(usuario_id: int, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
-    if not usuario:
+@router.get("/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
-    return usuario
+    return user
 
-@router.put("/{usuario_id}", response_model=UsuarioResponse)
-def update_user(usuario_id: int, dados: UsuarioCreate, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
-    if not usuario:
+@router.put("/{user_id}", response_model=UserResponse)
+def update_user(user_id: int, dados: UserCreate, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     for campo, valor in dados.model_dump(exclude={"senha"}).items():
-        setattr(usuario, campo, valor)
+        setattr(user, campo, valor)
 
     if dados.senha:
-        usuario.senha = pwd_context.hash(dados.senha)
+        user.senha = pwd_context.hash(dados.senha)
 
+    db.commit()
+    db.refresh(user)
+    return user
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    db.delete(user)
+    db.commit()
+
+
+# create user with patient profile
+@router.post("/paciente", response_model=UserWithPatientResponse, status_code=201)
+def criar_usuario_paciente(dados: UserWithPatientCreate, db: Session = Depends(get_db)):
+    # Verifica duplicidade
+    if db.query(User).filter(User.email == dados.email).first():
+        raise HTTPException(status_code=400, detail="E-mail já cadastrado")
+
+    # Cria o usuário
+    usuario = User(
+        nome=dados.nome,
+        email=dados.email,
+        senha=pwd_context.hash(dados.senha),
+        tipo="PACIENTE",           # força o tipo
+        telefone=dados.telefone,
+        foto_url=dados.foto_url,
+    )
+    db.add(usuario)
+    db.flush()  # ← gera o ID sem commitar ainda
+
+    # Cria o perfil de paciente usando o ID gerado
+    paciente = Patient(
+        usuario_id=usuario.id,     # ← ID já disponível graças ao flush()
+        data_nascimento=dados.data_nascimento,
+        tipo_sanguineo=dados.tipo_sanguineo,
+        telefone_emergencia=dados.telefone_emergencia,
+        contato_emergencia=dados.contato_emergencia,
+        observacoes=dados.observacoes,
+        alergias=dados.alergias,
+        condicoes_medicas=dados.condicoes_medicas,
+    )
+    db.add(paciente)
+
+    # Commita tudo junto — se qualquer coisa falhar, nada é salvo
     db.commit()
     db.refresh(usuario)
     return usuario
-
-@router.delete("/{usuario_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(usuario_id: int, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
-    db.delete(usuario)
-    db.commit()
