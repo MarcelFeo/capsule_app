@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
 
-class Cuidador(Base):
+class Caregiver(Base):
     __tablename__ = "cuidadores"
 
     id           = Column(Integer, primary_key=True, autoincrement=True)
@@ -11,4 +11,4 @@ class Cuidador(Base):
     crm          = Column(String)
     especialidade = Column(String)
 
-    usuario = relationship("Usuario", back_populates="cuidador")
+    usuario = relationship("User", back_populates="cuidador")

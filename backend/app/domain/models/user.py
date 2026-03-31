@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
 
-class Usuario(Base):
+class User(Base):
     __tablename__ = "usuarios"
 
     id            = Column(Integer, primary_key=True, autoincrement=True)
@@ -18,5 +18,5 @@ class Usuario(Base):
     data_criacao  = Column(DateTime, server_default=func.now())
 
     # Relationships
-    paciente  = relationship("Paciente",  back_populates="usuario", uselist=False)
-    cuidador  = relationship("Cuidador",  back_populates="usuario", uselist=False)
+    paciente  = relationship("Patient",  back_populates="usuario", uselist=False)
+    cuidador  = relationship("Caregiver",  back_populates="usuario", uselist=False)
