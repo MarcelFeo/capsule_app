@@ -21,6 +21,30 @@ def create_patient(patient: PatientCreate, db: Session = Depends(get_db), usuari
 def list_patients(skip: int = 0, limit: int = 20, db: Session = Depends(get_db), usuario: Usuario = Depends(exigir_cuidador_ou_admin)):
     return db.query(Patient).offset(skip).limit(limit).all()
 
+## rotas fixas devem vir antes das rotas com variaveis
+# Paciente vê seu próprio perfil
+@router.get("/me")
+def meu_perfil(usuario: Usuario = Depends(exigir_paciente)):
+    return {
+        "id": usuario.id,
+        "nome": usuario.nome,
+        "perfil": usuario.paciente,
+    }
+
+# Paciente atualiza suas próprias informações
+@router.put("/me")
+def atualizar_meu_perfil(
+    dados: PatientUpdate,
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(exigir_paciente),
+):
+    paciente = usuario.paciente
+    for campo, valor in dados.model_dump(exclude_none=True).items():
+        setattr(paciente, campo, valor)
+    db.commit()
+    db.refresh(paciente)
+    return paciente
+
 @router.get("/{patient_id}", response_model=PatientResponse)
 def get_patient(patient_id: int, db: Session = Depends(get_db), usuario: Usuario = Depends(exigir_cuidador_ou_admin)):
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
@@ -46,26 +70,3 @@ def delete_patient(patient_id: int, db: Session = Depends(get_db), usuario: Usua
         raise HTTPException(status_code=404, detail="Paciente não encontrado")
     db.delete(patient)
     db.commit()
-
-# Paciente vê seu próprio perfil
-@router.get("/me")
-def meu_perfil(usuario: Usuario = Depends(exigir_paciente)):
-    return {
-        "id": usuario.id,
-        "nome": usuario.nome,
-        "perfil": usuario.paciente,
-    }
-
-# Paciente atualiza suas próprias informações
-@router.put("/me")
-def atualizar_meu_perfil(
-    dados: PatientUpdate,
-    db: Session = Depends(get_db),
-    usuario: Usuario = Depends(exigir_paciente),
-):
-    paciente = usuario.paciente
-    for campo, valor in dados.model_dump(exclude_none=True).items():
-        setattr(paciente, campo, valor)
-    db.commit()
-    db.refresh(paciente)
-    return paciente
