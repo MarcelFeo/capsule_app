@@ -5,6 +5,8 @@ from app.infrastructure.database.connection import get_db
 from app.domain.models.user import User
 from app.domain.schemas.user_schema import UserCreate, UserResponse
 from app.domain.schemas.user_patient_schema import UserWithPatientCreate, UserWithPatientResponse
+from app.domain.models.caregiver import Caregiver
+from app.domain.schemas.user_caregiver_schema import UserWithCaregiverCreate, UserWithCaregiverResponse
 from app.domain.models.patient import Patient
 from app.use_cases.auth.dependencies import exigir_admin
 from typing import List
@@ -93,6 +95,37 @@ def criar_usuario_paciente(dados: UserWithPatientCreate, db: Session = Depends(g
         condicoes_medicas=dados.condicoes_medicas,
     )
     db.add(paciente)
+
+    # Commita tudo junto — se qualquer coisa falhar, nada é salvo
+    db.commit()
+    db.refresh(usuario)
+    return usuario
+
+@router.post("/cuidador", response_model=UserWithCaregiverResponse, status_code=201)
+def criar_usuario_cuidador(dados: UserWithCaregiverCreate, db: Session = Depends(get_db)):
+    # Verifica duplicidade
+    if db.query(User).filter(User.email == dados.email).first():
+        raise HTTPException(status_code=400, detail="E-mail já cadastrado")
+
+    # Cria o usuário
+    usuario = User(
+        nome=dados.nome,
+        email=dados.email,
+        senha=pwd_context.hash(dados.senha),
+        tipo="CUIDADOR",    # força o tipo        
+        telefone=dados.telefone,
+        foto_url=dados.foto_url,
+    )
+    db.add(usuario)
+    db.flush()  # ← gera o ID sem commitar ainda  
+
+    # Cria o perfil de paciente usando o ID gerado
+    cuidador = Caregiver(
+        usuario_id=usuario.id, # ← ID já disponível graças ao flush()   
+        crm=dados.crm,
+        especialidade=dados.especialidade
+    )
+    db.add(cuidador)
 
     # Commita tudo junto — se qualquer coisa falhar, nada é salvo
     db.commit()
