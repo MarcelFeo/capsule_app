@@ -5,3 +5,5 @@ env/
 .pytest_cache/
 __pycache__/
 .coverage
+*.pyc
+*.pyo
