@@ -1,9 +1,69 @@
-venv/
-.venv/
-env/
-.env
-.pytest_cache/
+# ===============================
+# Python
+# ===============================
 __pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribuição / build
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+
+# Instaladores
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Test / coverage
+htmlcov/
+.tox/
+.nox/
 .coverage
-*.pyc
-*.pyo
+.coverage.*
+.cache
+pytest_cache/
+
+# ===============================
+# Virtual Environment
+# ===============================
+venv/
+.env/
+.envrc
+.venv/
+ENV/
+
+# ===============================
+# IDE / Editor
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===============================
+# Logs
+# ===============================
+*.log
+
+# ===============================
+# Banco local
+# ===============================
+*.db
+*.sqlite3
+
+# ===============================
+# Variáveis de ambiente (SECRETS)
+# ===============================
+.env
+
+# ===============================
+# OS files
+# ===============================
+.DS_Store
+Thumbs.db
