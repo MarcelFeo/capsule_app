@@ -37,10 +37,10 @@ def update_medication_schedule(id: int, data: MedicationScheduleUpdate, db: Sess
     obj = db.query(MedicationSchedule).filter(MedicationSchedule.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Horário não encontrado")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -50,7 +50,7 @@ def delete_medication_schedule(id: int, db: Session = Depends(get_db)):
     obj = db.query(MedicationSchedule).filter(MedicationSchedule.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Horário não encontrado")
-    
+
     # Soft delete
     obj.ativo = False
     db.commit()

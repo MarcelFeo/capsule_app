@@ -37,10 +37,10 @@ def update_dose_record(id: int, data: DoseRecordUpdate, db: Session = Depends(ge
     obj = db.query(DoseRecord).filter(DoseRecord.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Registro de dose não encontrado")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -50,7 +50,7 @@ def delete_dose_record(id: int, db: Session = Depends(get_db)):
     obj = db.query(DoseRecord).filter(DoseRecord.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Registro de dose não encontrado")
-    
+
     # Hard delete
     db.delete(obj)
     db.commit()

@@ -35,10 +35,10 @@ def update_report(id: int, data: ReportUpdate, db: Session = Depends(get_db)):
     obj = db.query(Report).filter(Report.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Relatório não encontrado")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -48,7 +48,7 @@ def delete_report(id: int, db: Session = Depends(get_db)):
     obj = db.query(Report).filter(Report.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Relatório não encontrado")
-    
+
     # Hard delete
     db.delete(obj)
     db.commit()

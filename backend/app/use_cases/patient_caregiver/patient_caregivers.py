@@ -16,7 +16,7 @@ def create_patient_caregiver(data: PatientCaregiverCreate, db: Session = Depends
     ).first()
     if existing:
         raise HTTPException(status_code=400, detail="Associação já existe")
-    
+
     db_obj = PatientCaregiver(**data.model_dump())
     db.add(db_obj)
     db.commit()
@@ -39,10 +39,10 @@ def update_patient_caregiver(id: int, data: PatientCaregiverUpdate, db: Session 
     obj = db.query(PatientCaregiver).filter(PatientCaregiver.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Associação não encontrada")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -52,6 +52,6 @@ def delete_patient_caregiver(id: int, db: Session = Depends(get_db)):
     obj = db.query(PatientCaregiver).filter(PatientCaregiver.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Associação não encontrada")
-    
+
     db.delete(obj)
     db.commit()

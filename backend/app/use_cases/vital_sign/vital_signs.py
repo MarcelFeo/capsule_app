@@ -35,10 +35,10 @@ def update_vital_sign(id: int, data: VitalSignUpdate, db: Session = Depends(get_
     obj = db.query(VitalSign).filter(VitalSign.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Registro vital não encontrado")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -48,7 +48,7 @@ def delete_vital_sign(id: int, db: Session = Depends(get_db)):
     obj = db.query(VitalSign).filter(VitalSign.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Registro vital não encontrado")
-    
+
     # Hard delete
     db.delete(obj)
     db.commit()

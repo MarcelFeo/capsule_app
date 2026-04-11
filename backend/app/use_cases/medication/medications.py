@@ -14,7 +14,7 @@ def create_medication(data: MedicationCreate, db: Session = Depends(get_db)):
         existing = db.query(Medication).filter(Medication.codigo_barras == data.codigo_barras).first()
         if existing:
             raise HTTPException(status_code=400, detail="Código de barras já existe")
-    
+
     db_obj = Medication(**data.model_dump())
     db.add(db_obj)
     db.commit()
@@ -37,10 +37,10 @@ def update_medication(id: int, data: MedicationUpdate, db: Session = Depends(get
     obj = db.query(Medication).filter(Medication.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Medicamento não encontrado")
-    
+
     for field, value in data.model_dump(exclude_none=True).items():
         setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -50,6 +50,6 @@ def delete_medication(id: int, db: Session = Depends(get_db)):
     obj = db.query(Medication).filter(Medication.id == id).first()
     if not obj:
         raise HTTPException(status_code=404, detail="Medicamento não encontrado")
-    
+
     db.delete(obj)
     db.commit()
