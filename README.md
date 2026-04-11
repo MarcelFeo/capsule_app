@@ -1,3 +1,5 @@
+# ⚠️ PROJETO EM DESENVOLVIMENTO ⚠️
+
 # Capsule App - Documentação Completa
 
 ## 📋 Índice
