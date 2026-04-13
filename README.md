@@ -1136,7 +1136,7 @@ GET /usuarios/me  # Retorna tipo de usuário
 
 ## 👥 Autores
 
-- Desenvolvedor: (seu nome)
+- Desenvolvedores: Marcel Féo & Pedro Souza
 - Data: Março de 2026
 
 ---
@@ -1151,5 +1151,5 @@ Para dúvidas ou bugs:
 
 ---
 
-**Última atualização**: 31 de Março de 2026
+**Última atualização**: 313 de Abril de 2026
 **Status**: ✅ Production Ready (Core API)
