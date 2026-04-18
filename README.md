@@ -1,4 +1,6 @@
-# Capsule App - Gerenciamento de Saúde
+# ⚠️ PROJETO EM DESENVOLVIMENTO ⚠️
+
+# Capsule App - Documentação Completa
 
 ## 📋 Índice
 
@@ -679,9 +681,253 @@ ENVIRONMENT=development
 
 ---
 
-## 📚 Documentação Completa
+#### `Dockerfile`
+**Função**: Containerizar a API FastAPI
+**Stages**:
+- Base: Python 3.13-slim
+- Install: gcc, postgresql-client
+- Copy: requirements.txt
+- Install: pip install
+- Copy: código
+- Expose: porta 8000
+- CMD: uvicorn
 
-Para documentação detalhada, consulte:
-- **Swagger UI**: http://127.0.0.1:8000/docs (após iniciar a API)
-- **ReDoc**: http://127.0.0.1:8000/redoc
+---
 
+### Docker
+
+#### `docker-compose.yml`
+**Função**: Orquestração do PostgreSQL
+**Serviço**:
+- `db`: PostgreSQL 16-Alpine
+- Porta: 5432
+- Volume: postgres_data (persistência)
+- Healthcheck: pg_isready
+- Env vars: credenciais
+
+---
+
+## 🗄️ Modelo de Dados
+
+### Diagrama ER (Entity-Relationship)
+
+```
+┌──────────────────────┐
+│     USUARIOS         │
+├──────────────────────┤
+│ id (PK)              │
+│ nome                 │
+│ email (UNIQUE)       │
+│ senha (hash)         │
+│ tipo (enum)          │
+│ telefone             │
+│ foto_url             │
+│ ativo                │
+│ ultimo_login         │
+│ data_criacao         │
+└──────────────────────┘
+    ▲          ▲
+    │1         │1
+    │          │
+    │          ├─────────────────┐
+    │          │                 │
+    │    ┌─────────────┐    ┌──────────────────┐
+    │    │  PACIENTES  │    │  CUIDADORES      │
+    └────┤─────────────┤    ├──────────────────┤
+         │ id (PK)     │    │ id (PK)          │
+         │ usuario_id* │    │ usuario_id*      │
+         │ data_nasc   │    │ crm              │
+         │ tipo_sang   │    │ especialidade    │
+         │ tel_emerg   │    └──────────────────┘
+         │ contato_e   │
+         │ obs         │
+         │ alergias    │
+         │ condicoes   │
+         └─────────────┘
+
+Chaves:
+* = Foreign Key
+PK = Primary Key
+```
+
+### Relacionamentos
+
+| Tabela | Relacionamento | Para | Tipo |
+|--------|---|---|---|
+| PACIENTES | usuario_id | USUARIOS.id | 1:1 |
+| CUIDADORES | usuario_id | USUARIOS.id | 1:1 |
+
+---
+
+## 🔧 Variáveis de Ambiente
+
+### Banco de Dados
+
+| Var | Padrão | Descrição |
+|-----|--------|-----------|
+| `POSTGRES_USER` | - | Usuário PostgreSQL |
+| `POSTGRES_PASSWORD` | - | Senha PostgreSQL |
+| `POSTGRES_DB` | - | Nome do banco |
+| `POSTGRES_HOST` | `db` | Host (localhost/db/IP) |
+| `POSTGRES_PORT` | `5432` | Porta PostgreSQL |
+
+### Autenticação
+
+| Var | Padrão | Descrição |
+|-----|--------|-----------|
+| `SECRET_KEY` | - | Chave secreta JWT (**MUDE EM PRODUÇÃO**) |
+| `ALGORITHM` | `HS256` | Algoritmo de assinatura JWT |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | Expiração do token (minutos) |
+
+### Aplicação
+
+| Var | Padrão | Descrição |
+|-----|--------|-----------|
+| `ENVIRONMENT` | `development` | Ambiente (development/production) |
+
+---
+
+## 🐳 Docker
+
+### Iniciar Serviços
+
+```bash
+cd backend
+docker-compose up -d
+```
+
+### Parar Serviços
+
+```bash
+docker-compose stop
+```
+
+### Ver Logs
+
+```bash
+docker-compose logs db         # Logs PostgreSQL
+docker logs capsule_db         # Container
+```
+
+### Acessar PostgreSQL
+
+```bash
+docker exec -it capsule_db psql -U capsule -d capsule_db
+```
+
+### Status
+
+```bash
+docker ps | findstr capsule_db
+```
+
+---
+
+## 🎯 Próximos Passos
+
+### Phase 1: Core (✅ Completo)
+- ✅ Autenticação JWT
+- ✅ CRUD Users/Patients/Caregivers
+- ✅ Rotas protegidas com roles
+- ✅ PostgreSQL com Docker
+
+### Phase 2: Funcionalidades
+- 🔄 Medicamentos para pacientes
+- 🔄 Consultas/Agendamentos
+- 🔄 Prescrições médicas
+- 🔄 Relatórios
+
+### Phase 3: Frontend
+- ⏳ React ou Vue.js
+- ⏳ Autenticação JWT no cliente
+- ⏳ Dashboard para cada role
+- ⏳ PWA/Mobile
+
+### Phase 4: DevOps
+- ⏳ CI/CD (GitHub Actions)
+- ⏳ Deploy AWS/Heroku
+- ⏳ Monitoring
+- ⏳ Backup automático
+
+---
+
+## 🐛 Troubleshooting
+
+### Erro: "could not translate host name 'localhost'"
+**Solução**: Certifique-se que PostgreSQL está rodando
+```bash
+docker ps | findstr capsule_db
+docker-compose restart db
+```
+
+### Erro: "Connection refused on 127.0.0.1:5432"
+**Solução**: Aguarde completar startup (~10s) ou verifique logs
+```bash
+docker logs capsule_db
+```
+
+### Erro: "database does not exist"
+**Solução**: Banco é criado automaticamente, mas verifique credenciais
+```bash
+# Conectar ao PostgreSQL
+docker exec -it capsule_db psql -U capsule
+```
+
+### Erro: "Token inválido ou expirado"
+**Solução**: Faça login novamente
+```bash
+POST /auth/login  # Obter novo token
+```
+
+### Erro: "Acesso exclusivo para admins"
+**Solução**: Verifique permissão do usuário
+```bash
+GET /usuarios/me  # Retorna tipo de usuário
+```
+
+---
+
+## 📚 Recursos Adicionais
+
+### Documentação Oficial
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [SQLAlchemy](https://docs.sqlalchemy.org/)
+- [PostgreSQL](https://www.postgresql.org/docs/)
+- [Pydantic](https://docs.pydantic.dev/)
+- [python-jose](https://github.com/mpdavis/python-jose)
+
+### Ferramentas Úteis
+
+- **Postman**: Testar APIs
+- **DBeaver**: Gerenciar banco de dados
+- **Docker Desktop**: Gerenciar containers graficamente
+- **Swagger UI**: Testar rotas em http://127.0.0.1:8000/docs
+
+---
+
+## 📄 Licença
+
+(A definir - sugestão: MIT ou Apache 2.0)
+
+---
+
+## 👥 Autores
+
+- Desenvolvedores: Marcel Féo & Pedro Souza
+- Data: Março de 2026
+
+---
+
+## 💬 Suporte
+
+Para dúvidas ou bugs:
+1. Verifique o Troubleshooting acima
+2. Consulte os logs: `docker logs` ou console
+3. Revise a documentação das bibliotecas
+4. Abra uma issue no GitHub (quando disponível)
+
+---
+
+**Última atualização**: 313 de Abril de 2026
+**Status**: ✅ Production Ready (Core API)
