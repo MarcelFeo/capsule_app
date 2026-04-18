@@ -1,23 +1,12 @@
-// src/navigation/RootNavigator.tsx
 import React, { useContext } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext } from '../features/auth/AuthContext';
 import LoginScreen from '../features/auth/LoginScreen';
+import PatientNavigator from './PatientNavigator';
+import CaregiverNavigator from './CaregiverNavigator';
 
 const Stack = createNativeStackNavigator();
-
-// placeholder temporario
-function DashboardScreen() {
-  const authContext = useContext(AuthContext);
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Welcome to Capsule!</Text>
-      <Text style={{ marginBottom: 20 }}>Role: {authContext?.userRole}</Text>
-      <Button title="Logout" onPress={() => authContext?.logout()} color="red" />
-    </View>
-  );
-}
 
 export default function RootNavigator() {
   const authContext = useContext(AuthContext);
@@ -30,21 +19,18 @@ export default function RootNavigator() {
   }
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       {authContext?.userToken == null ? (
-        // flow de usuario nao autenticado
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} 
-        />
+        <Stack.Screen name="Login" component={LoginScreen} />
       ) : (
-        // flow de usuario autenticado
-        <Stack.Screen 
-          name="Dashboard" 
-          component={DashboardScreen} 
-          options={{ headerBackVisible: false }}
-        />
+        <>
+          {authContext.userRole === 'PACIENTE' && (
+            <Stack.Screen name="PatientApp" component={PatientNavigator} />
+          )}
+          {authContext.userRole === 'CUIDADOR' && (
+            <Stack.Screen name="CaregiverApp" component={CaregiverNavigator} />
+          )}
+        </>
       )}
     </Stack.Navigator>
   );
