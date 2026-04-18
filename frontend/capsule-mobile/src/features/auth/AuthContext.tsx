@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in when app starts
     const loadToken = async () => {
       try {
         const token = await SecureStore.getItemAsync('access_token');
@@ -28,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUserRole(role as Role);
         }
       } catch (e) {
-        console.error("Failed to load token", e);
+        console.error("erro ao carregar o token de acesso", e);
       } finally {
         setIsLoading(false);
       }

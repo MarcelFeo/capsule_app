@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { apiClient } from '../../api/client';
 import { AuthContext } from './AuthContext';
-import { Role } from '../../types/auth'; // Import the Role type
+import { Role } from '../../types/auth';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password.');
+      Alert.alert('Error', 'please enter both email and password.');
       return;
     }
 
@@ -52,13 +52,13 @@ export default function LoginScreen() {
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Senha"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <Button 
-        title={loading ? "Logging in..." : "Login"} 
+        title={loading ? "Entrando..." : "Login"} 
         onPress={handleLogin} 
         disabled={loading} 
       />
@@ -67,10 +67,10 @@ export default function LoginScreen() {
       <View style={styles.devSection}>
         <Text style={styles.devText}>-bypass-</Text>
         <View style={styles.devButtons}>
-          <Button title="login as paciente" onPress={() => handleDevBypass('PACIENTE')} color="#4CAF50" />
+          <Button title="login como paciente" onPress={() => handleDevBypass('PACIENTE')} color="#4CAF50" />
         </View>
         <View style={styles.devButtons}>
-          <Button title="login as cuidador" onPress={() => handleDevBypass('CUIDADOR')} color="#9C27B0" />
+          <Button title="login como cuidador" onPress={() => handleDevBypass('CUIDADOR')} color="#9C27B0" />
         </View>
       </View>
 

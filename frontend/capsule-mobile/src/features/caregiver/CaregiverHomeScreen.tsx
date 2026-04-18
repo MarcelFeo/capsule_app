@@ -4,8 +4,8 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function CaregiverHomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Patients</Text>
-      <Text>You are not monitoring any patients yet.</Text>
+      <Text style={styles.title}>meus pacientes</Text>
+      <Text>sem pacientes :c</Text>
     </View>
   );
 }
