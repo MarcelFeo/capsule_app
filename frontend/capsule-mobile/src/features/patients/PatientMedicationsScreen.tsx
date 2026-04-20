@@ -25,7 +25,7 @@ export default function PatientMedicationsScreen() {
   const { data: medications, isLoading: loadingMedications, isError } = useQuery({
     queryKey: ['patientMedications', pacienteId],
     queryFn: () => fetchMyMedications(pacienteId!),
-    enabled: !!pacienteId, //empede a consulta de rodar se pacienteId for undefined ou null
+    enabled: !!pacienteId, //empede a consulta de rodar se pacienteid for undefined ou null
   });
   if (loadingProfile || loadingMedications) {
     return (

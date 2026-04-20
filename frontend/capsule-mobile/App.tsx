@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './src/features/auth/AuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
+//mock
+import './src/api/mockAdapter'; 
 
 const queryClient = new QueryClient();
 

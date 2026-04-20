@@ -1,0 +1,51 @@
+import { PatientMeResponse } from '../types/patient';
+import { PatientMedication } from '../types/medication';
+
+export const mockPatientProfile: PatientMeResponse = {
+  id: 1,
+  nome: "Maria Silva",
+  perfil: {
+    id: 1,
+    usuario_id: 1,
+    data_nascimento: "1955-08-12",
+    tipo_sanguineo: "O+",
+    telefone_emergencia: "(11) 98765-4321",
+    contato_emergencia: "João Silva (Filho)",
+    observacoes: "Paciente apresenta leve dificuldade de locomoção.",
+    alergias: "Dipirona, Amendoim",
+    condicoes_medicas: "Hipertensão, Diabetes Tipo 2"
+  }
+};
+
+export const mockMedications: PatientMedication[] = [
+  {
+    id: 101,
+    paciente_id: 1,
+    medicamento_id: 42, // e.g., Losartana
+    dosagem: "50mg",
+    data_inicio: "2023-01-01",
+    data_fim: null,
+    instrucoes: "Tomar pela manhã após o café",
+    estoque_atual: 24,
+    estoque_minimo: 10,
+    data_vencimento: "2025-12-31",
+    frequencia: "1x ao dia",
+    prescrito_por: 2, // ID do médico/admin
+    ativo: true
+  },
+  {
+    id: 102,
+    paciente_id: 1,
+    medicamento_id: 15, // e.g., Metformina
+    dosagem: "500mg",
+    data_inicio: "2024-03-15",
+    data_fim: null,
+    instrucoes: "Tomar junto com o almoço",
+    estoque_atual: 4,
+    estoque_minimo: 15,
+    data_vencimento: "2024-10-01",
+    frequencia: "1x ao dia",
+    prescrito_por: 2,
+    ativo: true
+  }
+];
