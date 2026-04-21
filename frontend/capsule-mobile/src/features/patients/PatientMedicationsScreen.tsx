@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Alert } from 'react-native';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../api/client';
 import { PatientMeResponse } from '../../types/patient';
 import { PatientMedication } from '../../types/medication';
@@ -35,12 +35,12 @@ export default function PatientMedicationsScreen() {
     enabled: !!pacienteId, 
   });
 
-  // Setup the mutation
+  const queryClient = useQueryClient();
   const logDoseMutation = useMutation({
     mutationFn: logDose,
     onSuccess: () => {
-      Alert.alert("Success!", "Dose logged successfully.");
-      // In a real app, you might want to invalidate queries here to refresh the stock count
+      Alert.alert("Success!","Dose logged successfully.");
+      queryClient.invalidateQueries({queryKey:['doseHistory']}); 
     },
     onError: () => {
       Alert.alert("Error", "Failed to log the dose.");
@@ -53,11 +53,9 @@ export default function PatientMedicationsScreen() {
       status: "TOMADO", 
       data_hora_prevista: new Date().toISOString(),
       metodo_confirmacao: "MANUAL_APP"
-    };
-    
+    };   
     logDoseMutation.mutate(payload);
   };
-
   if (loadingProfile || loadingMedications) {
     return (
       <View style={styles.centerContainer}>
@@ -65,7 +63,6 @@ export default function PatientMedicationsScreen() {
       </View>
     );
   }
-
   if (isError) {
     return (
       <View style={styles.centerContainer}>
@@ -80,14 +77,12 @@ export default function PatientMedicationsScreen() {
       <Text style={styles.detail}>Dosage: {item.dosagem || 'N/A'}</Text>
       <Text style={styles.detail}>Frequency: {item.frequencia || 'N/A'}</Text>
       {item.instrucoes && <Text style={styles.instructions}>Note: {item.instrucoes}</Text>}
-      
       <View style={styles.stockContainer}>
         <Text style={styles.detail}>Stock: {item.estoque_atual}</Text>
         {item.estoque_atual <= item.estoque_minimo && (
           <Text style={styles.lowStockWarning}> (Low Stock!)</Text>
         )}
       </View>
-
       <View style={styles.actionContainer}>
         <Button 
           title={logDoseMutation.isPending ? "Logging..." : "Log Dose Taken"} 
@@ -102,7 +97,6 @@ export default function PatientMedicationsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>My Prescriptions</Text>
-      
       {medications?.length === 0 ? (
         <Text style={styles.emptyText}>You have no active medications.</Text>
       ) : (
