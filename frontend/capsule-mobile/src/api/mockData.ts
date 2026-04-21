@@ -1,5 +1,6 @@
 import { PatientMeResponse } from '../types/patient';
 import { PatientMedication } from '../types/medication';
+import { PatientCaregiverAssociation } from '../types/caregiver';
 
 export const mockPatientProfile: PatientMeResponse = {
   id: 1,
@@ -21,7 +22,7 @@ export const mockMedications: PatientMedication[] = [
   {
     id: 101,
     paciente_id: 1,
-    medicamento_id: 42, // e.g., Losartana
+    medicamento_id: 42, 
     dosagem: "50mg",
     data_inicio: "2023-01-01",
     data_fim: null,
@@ -30,13 +31,13 @@ export const mockMedications: PatientMedication[] = [
     estoque_minimo: 10,
     data_vencimento: "2025-12-31",
     frequencia: "1x ao dia",
-    prescrito_por: 2, // ID do médico/admin
+    prescrito_por: 2, 
     ativo: true
   },
   {
     id: 102,
     paciente_id: 1,
-    medicamento_id: 15, // e.g., Metformina
+    medicamento_id: 15, 
     dosagem: "500mg",
     data_inicio: "2024-03-15",
     data_fim: null,
@@ -47,5 +48,24 @@ export const mockMedications: PatientMedication[] = [
     frequencia: "1x ao dia",
     prescrito_por: 2,
     ativo: true
+  }
+];
+
+export const mockCaregiverPatients: PatientCaregiverAssociation[] = [
+  {
+    id: 1,
+    paciente_id: 1, 
+    cuidador_id: 2, 
+    permissoes: "TOTAL",
+    ativo: true,
+    paciente_nome: "Maria Silva",
+  },
+  {
+    id: 2,
+    paciente_id: 5,
+    cuidador_id: 2,
+    permissoes: "LEITURA",
+    ativo: true,
+    paciente_nome: "João Souza",
   }
 ];
