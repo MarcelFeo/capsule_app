@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import CaregiverHomeScreen from '../features/caregiver/CaregiverHomeScreen';
+import CaregiverPatientsStack from './CaregiverPatientsStack';
 import { AuthContext } from '../features/auth/AuthContext';
 
 const Tab = createBottomTabNavigator();
@@ -14,11 +14,10 @@ function ProfileScreen() {
     </View>
   );
 }
-
 export default function CaregiverNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Patients" component={CaregiverHomeScreen} />
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="PatientsList" component={CaregiverPatientsStack} options={{ title: 'Patients' }}/>
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
