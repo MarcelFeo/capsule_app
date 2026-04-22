@@ -22,7 +22,7 @@ export default function CaregiverPatientDetailScreen() {
   const route = useRoute<any>(); 
   const { pacienteId, pacienteNome } = route.params;
   const queryClient = useQueryClient();
-  const authContext = useContext(AuthContext); // vai ser usado p identifica quem logou a dose
+  const authContext = useContext(AuthContext); // vai ser usado p identificar quem logou a dose
   const navigation = useNavigation<any>();
 
   const { data: medications, isLoading, isError } = useQuery({
@@ -84,7 +84,7 @@ export default function CaregiverPatientDetailScreen() {
         <View style={styles.buttonRow}>
           <View style={styles.buttonWrapper}>
             <Button 
-              title={logDoseMutation.isPending ? "Logging..." : "Administer Dose"} 
+              title={logDoseMutation.isPending ? "Logging..." : "Administrar Dose"} 
               onPress={() => handleLogDoseAsCaregiver(item.id)}
               color="#9C27B0" 
               disabled={logDoseMutation.isPending}
@@ -93,7 +93,7 @@ export default function CaregiverPatientDetailScreen() {
           <View style={styles.spacer} />
           <View style={styles.buttonWrapper}>
             <Button 
-              title="View History" 
+              title="Ver Histórico" 
               onPress={() => navigation.navigate('MedicationHistory', { medicationId: item.id })}
               color="#607D8B" 
             />
@@ -106,9 +106,15 @@ export default function CaregiverPatientDetailScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Prescriptions for {pacienteNome}</Text>
-      
+      <View style={{ marginBottom: 15 }}>
+        <Button 
+          title="Adicionar Prescrição" 
+          onPress={() => navigation.navigate('AddMedication', { pacienteId, pacienteNome })}
+          color="#4CAF50"
+        />
+      </View>
       {medications?.length === 0 ? (
-        <Text style={styles.emptyText}>This patient has no active medications.</Text>
+        <Text style={styles.emptyText}>Nenhuma prescrição encontrada.</Text>
       ) : (
         <FlatList
           data={medications}

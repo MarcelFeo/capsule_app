@@ -3,6 +3,7 @@ import { apiClient } from './client';
 import { mockPatientProfile, mockMedications } from './mockData';
 import { DoseRecordResponse } from '../types/doseRecord';
 import { mockCaregiverPatients } from './mockData';
+import { mockCatalog } from './mockData';
 
 const mock = new MockAdapter(apiClient, { delayResponse: 800 });
 
@@ -58,4 +59,17 @@ mock.onGet(/\/registros-dose\/paciente-medicamento\/\d+/).reply((config) => {
   const pmId = parseInt(config.url!.split('/').pop()!);
   const filteredHistory = dynamicDoseHistory.filter(dose => dose.paciente_medicamento_id === pmId);
   return [200, filteredHistory];
+});
+
+mock.onGet('/medicamentos/').reply(200, mockCatalog);
+
+mock.onPost('/paciente-medicamentos/').reply((config) => {
+  const data = JSON.parse(config.data);  
+  const newPrescription = {
+    id: Math.floor(Math.random() * 1000),
+    ativo: true,
+    ...data,
+  };
+  mockMedications.push(newPrescription);
+  return [201, newPrescription];
 });

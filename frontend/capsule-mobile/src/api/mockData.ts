@@ -1,6 +1,8 @@
 import { PatientMeResponse } from '../types/patient';
 import { PatientMedication } from '../types/medication';
 import { PatientCaregiverAssociation } from '../types/caregiver';
+import { MedicationCatalogItem } from '../types/medication';
+
 
 export const mockPatientProfile: PatientMeResponse = {
   id: 1,
@@ -68,4 +70,10 @@ export const mockCaregiverPatients: PatientCaregiverAssociation[] = [
     ativo: true,
     paciente_nome: "João Souza",
   }
+];
+
+export const mockCatalog: MedicationCatalogItem[] = [
+  { id: 42, nome: "Losartana", nome_generico: "Losartana Potássica 50mg" },
+  { id: 15, nome: "Metformina", nome_generico: "Cloridrato de Metformina 500mg" },
+  { id: 88, nome: "Dipirona", nome_generico: "Dipirona Sódica 1g" }
 ];
