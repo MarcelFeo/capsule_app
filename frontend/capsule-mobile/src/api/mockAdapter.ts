@@ -54,3 +54,8 @@ mock.onPost('/registros-dose/').reply((config) => {
 });
 
 mock.onGet('/paciente-cuidadores/').reply(200, mockCaregiverPatients);
+mock.onGet(/\/registros-dose\/paciente-medicamento\/\d+/).reply((config) => {
+  const pmId = parseInt(config.url!.split('/').pop()!);
+  const filteredHistory = dynamicDoseHistory.filter(dose => dose.paciente_medicamento_id === pmId);
+  return [200, filteredHistory];
+});

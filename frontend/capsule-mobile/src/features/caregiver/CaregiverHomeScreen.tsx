@@ -1,7 +1,7 @@
-// src/features/caregivers/CaregiverHomeScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 import { apiClient } from '../../api/client';
 import { PatientCaregiverAssociation } from '../../types/caregiver';
 
@@ -11,10 +11,12 @@ const fetchMyPatients = async (): Promise<PatientCaregiverAssociation[]> => {
 };
 
 export default function CaregiverHomeScreen() {
+  const navigation = useNavigation<any>();
   const { data: patients, isLoading, isError } = useQuery({
     queryKey: ['caregiverPatients'],
     queryFn: fetchMyPatients,
   });
+
   if (isLoading) {
     return (
       <View style={styles.centerContainer}>
@@ -31,14 +33,19 @@ export default function CaregiverHomeScreen() {
     );
   }
   const renderPatientCard = ({ item }: { item: PatientCaregiverAssociation }) => (
-    <TouchableOpacity style={styles.card} onPress={() => console.log('Navigate to patient', item.paciente_id)}>
+    <TouchableOpacity 
+      style={styles.card} 
+      onPress={() => navigation.navigate('PatientDetail', { 
+        pacienteId: item.paciente_id, 
+        pacienteNome: item.paciente_nome || `Patient #${item.paciente_id}`
+      })}
+    >
       <View style={styles.cardHeader}>
         <Text style={styles.patientName}>{item.paciente_nome || `Patient #${item.paciente_id}`}</Text>
         <View style={styles.statusDot} />
       </View>
       <Text style={styles.detail}>Permissions: {item.permissoes}</Text>
       <Text style={styles.detail}>Patient ID: {item.paciente_id}</Text>
-
       <View style={styles.actionRow}>
         <Text style={styles.actionText}>View Medications ➔</Text>
       </View>
@@ -50,7 +57,7 @@ export default function CaregiverHomeScreen() {
       <Text style={styles.title}>My Patients</Text>
       
       {patients?.length === 0 ? (
-        <Text style={styles.emptyText}>You are not monitoring any patients currently.</Text>
+        <Text style={styles.emptyText}>.</Text>
       ) : (
         <FlatList
           data={patients}
