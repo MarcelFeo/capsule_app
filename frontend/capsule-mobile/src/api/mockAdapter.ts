@@ -4,6 +4,7 @@ import { mockPatientProfile, mockMedications } from './mockData';
 import { DoseRecordResponse } from '../types/doseRecord';
 import { mockCaregiverPatients } from './mockData';
 import { mockCatalog } from './mockData';
+import { mockNotifications } from './mockData';
 
 const mock = new MockAdapter(apiClient, { delayResponse: 800 });
 
@@ -62,7 +63,6 @@ mock.onGet(/\/registros-dose\/paciente-medicamento\/\d+/).reply((config) => {
 });
 
 mock.onGet('/medicamentos/').reply(200, mockCatalog);
-
 mock.onPost('/paciente-medicamentos/').reply((config) => {
   const data = JSON.parse(config.data);  
   const newPrescription = {
@@ -72,4 +72,20 @@ mock.onPost('/paciente-medicamentos/').reply((config) => {
   };
   mockMedications.push(newPrescription);
   return [201, newPrescription];
+});
+
+mock.onGet(/\/notificacoes\/usuario\/\d+/).reply(() => {
+  return [200, mockNotifications];
+});
+
+mock.onPut(/\/notificacoes\/\d+/).reply((config) => {
+  const id = parseInt(config.url!.split('/').pop()!);
+  const data = JSON.parse(config.data);
+  const notification = mockNotifications.find(n => n.id === id);
+  if (notification) {
+    notification.lida = data.lida !== undefined ? data.lida : notification.lida;
+    notification.data_leitura = data.data_leitura || new Date().toISOString();
+  }
+  
+  return [200, notification];
 });

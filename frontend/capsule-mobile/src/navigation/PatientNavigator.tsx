@@ -3,8 +3,9 @@ import { Button, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PatientHomeScreen from '../features/patients/PatientHomeScreen';
 import PatientMedicationsScreen from '../features/patients/PatientMedicationsScreen';
-import PatientHistoryScreen from '../features/patients/PatientHistoryScreen'; 
+import PatientHistoryScreen from '../features/patients/PatientHistoryScreen';
 import { AuthContext } from '../features/auth/AuthContext';
+import NotificationsScreen from '../features/notifications/NotificationsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,11 +19,12 @@ function ProfileScreen() {
 }
 
 export default function PatientNavigator() {
-  return(
+  return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={PatientHomeScreen}/>
+      <Tab.Screen name="Home" component={PatientHomeScreen} />
       <Tab.Screen name="Medications" component={PatientMedicationsScreen} /> 
-      <Tab.Screen name="History" component={PatientHistoryScreen}/>
+      <Tab.Screen name="History" component={PatientHistoryScreen} />
+      <Tab.Screen name="Alerts" component={NotificationsScreen} /> 
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

@@ -2,7 +2,7 @@ import { PatientMeResponse } from '../types/patient';
 import { PatientMedication } from '../types/medication';
 import { PatientCaregiverAssociation } from '../types/caregiver';
 import { MedicationCatalogItem } from '../types/medication';
-
+import { NotificationResponse } from '../types/notification';
 
 export const mockPatientProfile: PatientMeResponse = {
   id: 1,
@@ -76,4 +76,26 @@ export const mockCatalog: MedicationCatalogItem[] = [
   { id: 42, nome: "Losartana", nome_generico: "Losartana Potássica 50mg" },
   { id: 15, nome: "Metformina", nome_generico: "Cloridrato de Metformina 500mg" },
   { id: 88, nome: "Dipirona", nome_generico: "Dipirona Sódica 1g" }
+];
+
+export const mockNotifications: NotificationResponse[] = [
+  {
+    id: 1,
+    usuario_id: 1, 
+    mensagem: "Hora de tomar sua Losartana!!! (50mg).",
+    tipo: "LEMBRETE_DOSE",
+    prioridade: "NORMAL",
+    data_envio: new Date(Date.now() - 3600000).toISOString(), 
+    lida: false,
+  },
+  {
+    id: 2,
+    usuario_id: 1,
+    mensagem: "Sua metformina ta acabando :(",
+    tipo: "ALERTA_ESTOQUE",
+    prioridade: "ALTA",
+    data_envio: new Date(Date.now() - 86400000).toISOString(), 
+    lida: true,
+    data_leitura: new Date(Date.now() - 80000000).toISOString(),
+  }
 ];
