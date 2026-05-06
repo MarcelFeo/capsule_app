@@ -56,6 +56,10 @@ Verificar: `docker ps | findstr capsule_db`
 ### 2. Instalar Dependências
 
 ```bash
+# Recomenda-se criar um ambiente virtual antes
+cd backend/app
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -156,7 +160,7 @@ curl -X POST "http://127.0.0.1:8000/pacientes/" \
 
 ---
 
-## � Exemplos Práticos
+## 📘 Exemplos Práticos
 
 ### 1. Criar Usuário Paciente (POST)
 
@@ -181,6 +185,22 @@ curl -X POST "http://127.0.0.1:8000/usuarios/paciente" \
 ```json
 {
   "id": 1,
+
+---
+
+## 🤝 Como Contribuir
+
+- Faça um fork do repositório
+- Crie uma branch com a sua feature: `git checkout -b feature/minha-feature`
+- Abra um pull request descrevendo as mudanças
+
+Procure adicionar testes para alterações de comportamento e mantenha o estilo de código.
+
+---
+
+## 📄 Licença
+
+Este projeto ainda não possui uma licença explícita. Se for utilizado em produção, adicione um arquivo `LICENSE` adequado.
   "nome": "João Silva",
   "email": "joao@exemplo.com",
   "tipo": "PACIENTE",
