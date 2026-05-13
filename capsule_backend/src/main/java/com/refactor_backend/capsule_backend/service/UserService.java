@@ -4,6 +4,8 @@ import com.refactor_backend.capsule_backend.domain.User;
 import com.refactor_backend.capsule_backend.dto.UserRequest;
 import com.refactor_backend.capsule_backend.dto.UserResponse;
 import com.refactor_backend.capsule_backend.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -25,6 +27,10 @@ public class UserService {
         User user = request.toEntity();
         User userSaved = userRepository.save(user);
         return UserResponse.fromEntity(userSaved);
+    }
+
+    public Page<UserResponse> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(UserResponse::fromEntity);
     }
 
     public UserResponse getUserProfile(UUID userId) {

@@ -1,0 +1,23 @@
+package com.refactor_backend.capsule_backend.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable()) // desabilita CSRF (importante para API)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // libera tudo
+                )
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+}
