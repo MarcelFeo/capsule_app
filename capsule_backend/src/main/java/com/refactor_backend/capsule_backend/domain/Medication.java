@@ -40,7 +40,6 @@ public class Medication {
     @Column(nullable = false)
     private LocalDate start_date;
 
-    @Column(nullable = false)
     private LocalDate end_date;
 
 }
