@@ -1,0 +1,2 @@
+ALTER TABLE medications
+ALTER COLUMN end_date DROP NOT NULL;
