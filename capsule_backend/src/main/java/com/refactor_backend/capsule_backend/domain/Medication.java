@@ -37,9 +37,10 @@ public class Medication {
     private String[] daysWeek;
     private boolean active = true;
 
-    @Column(nullable = false)
-    private LocalDate start_date;
+    @Column(name = "start_date", nullable = false)
+    private LocalDate startDate;
 
-    private LocalDate end_date;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
 }

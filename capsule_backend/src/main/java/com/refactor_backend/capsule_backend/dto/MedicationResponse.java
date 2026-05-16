@@ -27,8 +27,8 @@ public record MedicationResponse(
             medication.getDosage(),
             medication.getDaysWeek(),
             medication.isActive(),
-            medication.getStart_date(),
-            medication.getEnd_date()
+            medication.getStartDate(),
+            medication.getEndDate()
         );
     }
 

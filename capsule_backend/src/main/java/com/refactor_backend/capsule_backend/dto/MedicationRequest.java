@@ -26,7 +26,7 @@ public record MedicationRequest(
         medication.setInstruction(instruction);
         medication.setDosage(dosage);
         medication.setDaysWeek(daysWeek);
-        medication.setStart_date(start_date);
+        medication.setStartDate(start_date);
     }
 
 }
